@@ -7,7 +7,7 @@ This program is a demonstration of PKTAP (Packet TAP) interface of Mac OSX (Darw
 
 build & run
 ==========
- `$ wget http://www.opensource.apple.com/source/xnu/xnu-2422.1.72/bsd/net/pktap.h`  
+ `$ curl -o pktap.h http://www.opensource.apple.com/source/xnu/xnu-2422.1.72/bsd/net/pktap.h`  
  `$ make`  
  `$ sudo ./pktap_demo [interface]...`  
  
