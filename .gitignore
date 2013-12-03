@@ -16,3 +16,7 @@
 *.exe
 *.out
 *.app
+
+# Othrer files
+pktap_demo
+pktap.h
