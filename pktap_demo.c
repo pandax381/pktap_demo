@@ -3,7 +3,7 @@
  *
  * This software is released under the MIT License.
  *
- * http://opensource.org/licenses/mit-license.php
+ * Please refer http://opensource.org/licenses/mit-license.php for detail.
  */
 
 #include <stdio.h>
@@ -200,12 +200,12 @@ pktap_debug_print (struct pktap_header *hdr) {
     fprintf(stderr, "pth_protocol_family: %u\n", hdr->pth_protocol_family);
     fprintf(stderr, "pth_frame_pre_length: %u\n", hdr->pth_frame_pre_length);
     fprintf(stderr, "pth_frame_post_length: %u\n", hdr->pth_frame_post_length);
-    fprintf(stderr, "pth_pid: %u\n", hdr->pth_pid);
+    fprintf(stderr, "pth_pid: %d\n", hdr->pth_pid);
     fprintf(stderr, "pth_comm: %s\n", hdr->pth_comm);
     fprintf(stderr, "pth_svc: %u\n", hdr->pth_svc);
     fprintf(stderr, "pth_iftype: %u\n", hdr->pth_iftype);
     fprintf(stderr, "pth_ifunit: %u\n", hdr->pth_ifunit);
-    fprintf(stderr, "pth_epid: %u\n", hdr->pth_epid);
+    fprintf(stderr, "pth_epid: %d\n", hdr->pth_epid);
     fprintf(stderr, "pth_ecomm: %s\n", hdr->pth_ecomm);
 }
 
