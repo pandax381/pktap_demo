@@ -23,6 +23,13 @@
 //#include <net/pktap.h>
 #include "pktap.h"
 
+/* copy from http://opensource.apple.com/source/xnu/xnu-3248.60.10/bsd/net/bpf.h */
+#ifdef PRIVATE
+#define DLT_PKTAP DLT_USER2
+#define BIOCGWANTPKTAP _IOR('B', 127, u_int)
+#define BIOCSWANTPKTAP _IOWR('B', 127, u_int)
+#endif
+
 #define BPF_DEVICE_NUM 4
 
 struct bpf_device {
@@ -104,12 +111,11 @@ main (int argc, char *argv[]) {
         }
         bh = (struct bpf_hdr *)device->buffer;
         while ((caddr_t)bh < (caddr_t)device->buffer + len) {
-            if (bh->bh_caplen < sizeof(struct pktap_header)) {
-                continue;
+            if (bh->bh_caplen > sizeof(struct pktap_header)) {
+                pth = (struct pktap_header *)((caddr_t)bh + bh->bh_hdrlen);
+                pktap_debug_print(pth);
+                hexdump(stderr, pth + 1, bh->bh_caplen - pth->pth_length);
             }
-            pth = (struct pktap_header *)((caddr_t)bh + bh->bh_hdrlen);
-            pktap_debug_print(pth);
-            hexdump(stderr, pth + 1, bh->bh_caplen - pth->pth_length);
             bh = (struct bpf_hdr *)((caddr_t)bh + BPF_WORDALIGN(bh->bh_hdrlen + bh->bh_caplen));
         }
     }
@@ -264,6 +270,19 @@ bpf_device_open (const char *name) {
         perror("ioctl [BIOCSHDRCMPLT]");
         goto ERROR;
     }
+#ifdef BIOCSWANTPKTAP
+    if (ioctl(device->fd, BIOCSWANTPKTAP, &enable) == -1) {
+        perror("ioctl [BIOCSWANTPKTAP]");
+        goto ERROR;
+    }
+#endif
+#ifdef DLT_PKTAP
+    int dlt = DLT_PKTAP;
+    if (ioctl(device->fd, BIOCSDLT, &dlt) == -1) {
+        perror("ioctl [BIOCSDLT]");
+        goto ERROR;
+    }
+#endif
     return device;
 ERROR:
     if (device) {
